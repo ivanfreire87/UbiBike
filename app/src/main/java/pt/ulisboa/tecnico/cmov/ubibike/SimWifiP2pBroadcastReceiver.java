@@ -1,4 +1,4 @@
-package pt.inesc.termite.msgsender;
+package pt.ulisboa.tecnico.cmov.ubibike;
 
 import pt.inesc.termite.wifidirect.SimWifiP2pBroadcast;
 import pt.inesc.termite.wifidirect.SimWifiP2pInfo;
@@ -18,7 +18,7 @@ public class SimWifiP2pBroadcastReceiver extends BroadcastReceiver {
         super();
         this.mActivity = activity;
     }*/
-public SimWifiP2pBroadcastReceiver(MsgSenderActivity activity) {
+public SimWifiP2pBroadcastReceiver(MainActivity activity) {
     super();
     this.mActivity = activity;
 }
