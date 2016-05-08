@@ -17,7 +17,7 @@ public class LoggedActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String email = intent.getStringExtra(LoginActivity.EMAIL);
 
-        setTitle("UbiBike teste 3 - " + email);
+        setTitle("UbiBike teste 6 - " + email);
 
         setContentView(R.layout.activity_logged);
     }
