@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
         android:ems="10"
-        android:id="@+id/email_box" />
+        android:id="@+id/log_email_box" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:inputType="numberPassword"
         android:ems="10"
-        android:id="@+id/password_box"
+        android:id="@+id/log_pw_box"
         android:layout_gravity="center_horizontal" />
 
     <LinearLayout
