@@ -10,7 +10,7 @@ import android.widget.EditText;
  * Created by ivanf on 08/05/2016.
  */
 public class LoginActivity extends AppCompatActivity {
-    public final static String EMAIL = "pt.ulisboa.tecnico.cmov.helloworld.MESSAGE";
+    public final static String EMAIL = "pt.ulisboa.tecnico.cmov.ubibike.MESSAGE";
 
     private String email;
     private String pw;

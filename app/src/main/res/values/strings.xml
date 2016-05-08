@@ -5,4 +5,6 @@
     <string name="title_activity_login">Login</string>
     <string name="title_activity_register">Register</string>
     <string name="title_activity_logged">UbiBike - Logged In</string>
+
+    <string name="inRangeButton">In Range</string>
 </resources>

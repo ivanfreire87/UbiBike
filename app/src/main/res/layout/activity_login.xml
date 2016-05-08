@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="1">
@@ -9,21 +9,31 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="E-Mail"
-        android:id="@+id/textView3" />
+        android:id="@+id/textView3"
+        android:layout_marginTop="39dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
         android:ems="10"
-        android:id="@+id/log_email_box" />
+        android:id="@+id/log_email_box"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView3"
+        android:layout_alignParentLeft="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Password"
-        android:id="@+id/textView2" />
+        android:id="@+id/textView2"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/log_email_box"
+        android:layout_alignParentLeft="true" />
 
     <EditText
         android:layout_width="match_parent"
@@ -31,7 +41,10 @@
         android:inputType="numberPassword"
         android:ems="10"
         android:id="@+id/log_pw_box"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView2"
+        android:layout_alignParentLeft="true" />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -39,7 +52,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_weight="0.33"
-        android:weightSum="1">
+        android:weightSum="1"
+        android:id="@+id/linearLayout2"
+        android:layout_below="@+id/log_pw_box"
+        android:layout_alignParentLeft="true">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -55,15 +71,18 @@
             android:layout_height="match_parent"
             android:layout_weight="0.51">
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Login"
-                android:id="@+id/button"
-                android:onClick = "login"/>
-
         </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:id="@+id/button"
+        android:onClick = "login"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="142dp" />
+
+</RelativeLayout>
