@@ -2,4 +2,7 @@
     <string name="app_name">UbiBike</string>
     <string name="title_activity_send_message">Send Message</string>
     <string name="title_activity_send_points">Send Points</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_register">Register</string>
+    <string name="title_activity_logged">UbiBike - Logged in</string>
 </resources>

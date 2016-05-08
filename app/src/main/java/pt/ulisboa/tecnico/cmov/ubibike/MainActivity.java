@@ -23,13 +23,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void sendMessage(View view) {
-        Intent intent = new Intent(this, SendMessageActivity.class);
+    public void login(View view) {
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
 
-    public void sendPoints(View view) {
-        Intent intent = new Intent(this, SendPointsActivity.class);
+    public void register(View view) {
+        Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
     }
 
