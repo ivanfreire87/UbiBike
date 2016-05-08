@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">UbiBike</string>
+    <string name="title_activity_send_message">Send Message</string>
+    <string name="title_activity_send_points">Send Points</string>
 </resources>
