@@ -21,7 +21,6 @@ public class MessagesActivity extends Activity implements ConnectionService.Call
 
     ConnectionService mService;
     private boolean mBound = false;
-    private boolean connectedToOtherDevice = false;
     private TextView mTextInput;
     private TextView mTextOutput;
     private String connectionAddress;
@@ -50,6 +49,7 @@ public class MessagesActivity extends Activity implements ConnectionService.Call
         super.onStop();
         // Unbind from the service
         if (mBound) {
+            mService.disconnect();
             unbindService(mConnection);
             mBound = false;
         }
@@ -76,8 +76,7 @@ public class MessagesActivity extends Activity implements ConnectionService.Call
 
                         if (mBound) {
                             mService.connect(connectionAddress);
-                            connectedToOtherDevice = true;
-                            Toast.makeText(MessagesActivity.this, "Connected to device with ip " + connectionAddress, Toast.LENGTH_SHORT).show();
+                            appendOutput("Connected to device with ip " + connectionAddress);
                         } else {
                             Toast.makeText(MessagesActivity.this, "Service not bound", Toast.LENGTH_SHORT).show();
                         }
@@ -113,12 +112,8 @@ public class MessagesActivity extends Activity implements ConnectionService.Call
         mTextOutput = (TextView) findViewById(R.id.messagesOutputText);
         mTextOutput.setEnabled(false);
 
-        if (connectedToOtherDevice) {
-            findViewById(R.id.sendButton).setEnabled(true);
-        }
-        else{
-            findViewById(R.id.sendButton).setEnabled(false);
-        }
+        findViewById(R.id.sendButton).setEnabled(false);
+
         findViewById(R.id.idInRangeButton).setEnabled(true);
 
     }
@@ -128,8 +123,6 @@ public class MessagesActivity extends Activity implements ConnectionService.Call
         mTextInput.setEnabled(true);
         mTextOutput.setEnabled(true);
 
-
-        findViewById(R.id.sendButton).setEnabled(false);
         findViewById(R.id.idInRangeButton).setEnabled(true);
 
     }
@@ -150,7 +143,6 @@ public class MessagesActivity extends Activity implements ConnectionService.Call
         @Override
         public void onClick(View v) {
             findViewById(R.id.sendButton).setEnabled(false);
-
             if (mBound) {
                 mService.send(mTextInput.getText().toString());
             } else {

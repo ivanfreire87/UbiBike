@@ -150,11 +150,11 @@ public class ConnectionService extends Service implements PeerListListener {
                 BufferedReader sockIn = new BufferedReader(
                         new InputStreamReader(mCliSocket.getInputStream()));
                 sockIn.readLine();
-                mCliSocket.close();
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            mCliSocket = null;
+
             return null;
         }
 
