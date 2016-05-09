@@ -15,20 +15,22 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class MessagesActivity extends Activity implements ConnectionService.Callbacks {
 
     ConnectionService mService;
-    boolean mBound = false;
-
-    protected TextView mTextInput;
-    protected TextView mTextOutput;
+    private boolean mBound = false;
+    private boolean connectedToOtherDevice = false;
+    private TextView mTextInput;
+    private TextView mTextOutput;
+    private String connectionAddress;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // initialize the UI
         setContentView(R.layout.activity_messages);
         guiSetButtonListeners();
         guiUpdateInitState();
@@ -58,10 +60,30 @@ public class MessagesActivity extends Activity implements ConnectionService.Call
         mTextInput.setText("");
     }
 
-    public void displayDevicesInRange(StringBuilder sb) {
+    public void appendOutput(String text){
+        mTextOutput.append(text + "\n");
+    }
+
+    public void displayDevicesInRange(final CharSequence[] devices) {
         new AlertDialog.Builder(this)
-                .setTitle("Devices in WiFi Range")
-                .setMessage(sb.toString())
+                .setTitle("Connect to")
+                .setItems(devices, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        String option = devices[which].toString();
+                        connectionAddress = option.split("\\(")[1].split("\\)")[0];
+
+                        if (mBound) {
+                            mService.connect(connectionAddress);
+                            connectedToOtherDevice = true;
+                            Toast.makeText(MessagesActivity.this, "Connected to device with ip " + connectionAddress, Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(MessagesActivity.this, "Service not bound", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                })
                 .setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                     }
@@ -70,18 +92,74 @@ public class MessagesActivity extends Activity implements ConnectionService.Call
     }
 
     public void GuiUpdateConnectedState(){
-        findViewById(R.id.idDisconnectButton).setEnabled(true);
-        findViewById(R.id.connectButton).setEnabled(false);
+
         findViewById(R.id.sendButton).setEnabled(true);
         mTextInput.setHint("");
         mTextInput.setText("");
-        mTextOutput.setText("");
+
     }
 
-    public void setOutput(String s){
-        mTextOutput.setText(s);
+    public void guiSetButtonListeners() {
+        findViewById(R.id.sendButton).setOnClickListener(listenerSendButton);
+        findViewById(R.id.idInRangeButton).setOnClickListener(listenerInRangeButton);
+
     }
 
+    public void guiUpdateInitState() {
+
+        mTextInput = (TextView) findViewById(R.id.messagesInputText);
+        mTextInput.setEnabled(true);
+
+        mTextOutput = (TextView) findViewById(R.id.messagesOutputText);
+        mTextOutput.setEnabled(false);
+
+        if (connectedToOtherDevice) {
+            findViewById(R.id.sendButton).setEnabled(true);
+        }
+        else{
+            findViewById(R.id.sendButton).setEnabled(false);
+        }
+        findViewById(R.id.idInRangeButton).setEnabled(true);
+
+    }
+
+    public void guiUpdateDisconnectedState() {
+
+        mTextInput.setEnabled(true);
+        mTextOutput.setEnabled(true);
+
+
+        findViewById(R.id.sendButton).setEnabled(false);
+        findViewById(R.id.idInRangeButton).setEnabled(true);
+
+    }
+
+	//Listeners associated to buttons
+
+    private OnClickListener listenerInRangeButton = new OnClickListener() {
+        public void onClick(View v){
+            if (mBound) {
+                mService.inRange();
+            } else {
+                Toast.makeText(v.getContext(), "Service not bound", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
+
+    private OnClickListener listenerSendButton = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            findViewById(R.id.sendButton).setEnabled(false);
+
+            if (mBound) {
+                mService.send(mTextInput.getText().toString());
+            } else {
+                Toast.makeText(v.getContext(), "Service not bound", Toast.LENGTH_SHORT).show();
+            }
+
+
+        }
+    };
 
 
     /** Defines callbacks for service binding, passed to bindService() */
@@ -102,118 +180,5 @@ public class MessagesActivity extends Activity implements ConnectionService.Call
             mBound = false;
         }
     };
-
-	//Listeners associated to buttons
-
-    private OnClickListener listenerInRangeButton = new OnClickListener() {
-        public void onClick(View v){
-            if (mBound) {
-                mService.inRange();
-            } else {
-                Toast.makeText(v.getContext(), "Service not bound", Toast.LENGTH_SHORT).show();
-            }
-        }
-    };
-
-
-    private OnClickListener listenerConnectButton = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            findViewById(R.id.connectButton).setEnabled(false);
-            if (mBound) {
-                mService.connect(mTextInput.getText().toString());
-            } else {
-                Toast.makeText(v.getContext(), "Service not bound", Toast.LENGTH_SHORT).show();
-            }
-
-        }
-    };
-
-
-    private void guiSetButtonListeners() {
-
-        findViewById(R.id.connectButton).setOnClickListener(listenerConnectButton);
-        findViewById(R.id.idDisconnectButton).setOnClickListener(listenerDisconnectButton);
-        findViewById(R.id.sendButton).setOnClickListener(listenerSendButton);
-        findViewById(R.id.idInRangeButton).setOnClickListener(listenerInRangeButton);
-
-    }
-
-    protected void guiUpdateInitState() {
-
-        mTextInput = (TextView) findViewById(R.id.editText1);
-        mTextInput.setHint("type remote virtual IP (192.168.0.0/16)");
-        mTextInput.setEnabled(false);
-
-        mTextOutput = (TextView) findViewById(R.id.editText2);
-        mTextOutput.setEnabled(false);
-        mTextOutput.setText("");
-
-        findViewById(R.id.connectButton).setEnabled(false);
-        findViewById(R.id.idDisconnectButton).setEnabled(false);
-        findViewById(R.id.sendButton).setEnabled(false);
-        findViewById(R.id.idInRangeButton).setEnabled(true);
-
-    }
-
-    public void guiUpdateDisconnectedState() {
-
-        mTextInput.setEnabled(true);
-        mTextInput.setHint("type remote virtual IP (192.168.0.0/16)");
-        mTextOutput.setEnabled(true);
-        mTextOutput.setText("");
-
-        findViewById(R.id.sendButton).setEnabled(false);
-        findViewById(R.id.connectButton).setEnabled(true);
-        findViewById(R.id.idDisconnectButton).setEnabled(false);
-        findViewById(R.id.idInRangeButton).setEnabled(true);
-
-    }
-
-    private OnClickListener listenerSendButton = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            findViewById(R.id.sendButton).setEnabled(false);
-
-            if (mBound) {
-                mService.send(mTextInput.getText().toString());
-            } else {
-                Toast.makeText(v.getContext(), "Service not bound", Toast.LENGTH_SHORT).show();
-            }
-
-
-        }
-    };
-
-    private OnClickListener listenerDisconnectButton = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            findViewById(R.id.idDisconnectButton).setEnabled(false);
-
-            if (mBound) {
-                mService.disconnect();
-            } else {
-                Toast.makeText(v.getContext(), "Service not bound", Toast.LENGTH_SHORT).show();
-            }
-
-            guiUpdateDisconnectedState();
-        }
-    };
-
-    public class ConnectCommTask extends AsyncTask<Void, String, Void> {
-
-        @Override
-        protected Void doInBackground(Void... params) {
-
-
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(String... values) {
-
-            //////////////////////mTextOutput.append(values[0] + "\n");
-        }
-    }
 
 }

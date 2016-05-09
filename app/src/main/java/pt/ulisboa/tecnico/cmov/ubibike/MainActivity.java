@@ -5,15 +5,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = "MainActivity";
-
-
-
     public final static String EXTRA_MESSAGE = "pt.ulisboa.tecnico.cmov.ubibike.MESSAGE";
 
     @Override
@@ -26,12 +22,6 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, "MainActivity created.");
 
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Toast.makeText(this, "WiFi Direct disabled", Toast.LENGTH_SHORT).show();
     }
 
     public void login(View view) {
