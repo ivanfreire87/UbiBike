@@ -1,10 +1,19 @@
 <resources>
     <string name="app_name">UbiBike</string>
-    <string name="title_activity_send_message">Send Message</string>
-    <string name="title_activity_send_points">Send Points</string>
+    <string name="title_activity_messages">Messages</string>
+    <string name="title_activity_points">Points</string>
     <string name="title_activity_login">Login</string>
     <string name="title_activity_register">Register</string>
     <string name="title_activity_logged">UbiBike - Logged In</string>
 
     <string name="inRangeButton">In Range</string>
+    <string name="port">10001</string>
+
+    <string name="sendButton">Send</string>
+    <string name="connectButton">Connect</string>
+    <string name="disconnectButton">Disconnect</string>
+    <string name="serviceButton">WiFi On</string>
+    <string name="cancelButton">WiFi Off</string>
+
+    <string name="inGroupButton">In Network</string>
 </resources>

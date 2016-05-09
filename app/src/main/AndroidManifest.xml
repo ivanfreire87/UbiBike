@@ -21,16 +21,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SendMessageActivity"
-            android:label="@string/title_activity_send_message"
+            android:name=".MessagesActivity"
+            android:label="@string/title_activity_messages"
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="pt.ulisboa.tecnico.cmov.ubibike.MainActivity" />
         </activity>
         <activity
-            android:name=".SendPointsActivity"
-            android:label="@string/title_activity_send_points"
+            android:name=".PointsActivity"
+            android:label="@string/title_activity_points"
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -62,6 +62,7 @@
         </activity>
 
         <service android:name="pt.inesc.termite.wifidirect.service.SimWifiP2pService" />
+        <service android:name=".ConnectionService" android:enabled="true" />
 
     </application>
 

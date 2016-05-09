@@ -1,26 +1,37 @@
 package pt.ulisboa.tecnico.cmov.ubibike;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
+
+    public static final String TAG = "MainActivity";
+
+
 
     public final static String EXTRA_MESSAGE = "pt.ulisboa.tecnico.cmov.ubibike.MESSAGE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         setContentView(R.layout.activity_main);
-        Log.d("MainActivity", "UBLog MainActivity created.");
 
+
+        startService(new Intent(this, ConnectionService.class));
+
+        Log.d(TAG, "MainActivity created.");
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Toast.makeText(this, "WiFi Direct disabled", Toast.LENGTH_SHORT).show();
     }
 
     public void login(View view) {
@@ -32,8 +43,5 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
     }
-
-
-
 
 }

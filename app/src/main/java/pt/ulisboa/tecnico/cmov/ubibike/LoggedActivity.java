@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.TextView;
 
 /**
  * Created by ivanf on 08/05/2016.
@@ -22,13 +21,13 @@ public class LoggedActivity extends AppCompatActivity {
         setContentView(R.layout.activity_logged);
     }
 
-    public void sendMessage(View view) {
-        Intent intent = new Intent(this, SendMessageActivity.class);
+    public void messages(View view) {
+        Intent intent = new Intent(this, MessagesActivity.class);
         startActivity(intent);
     }
 
-    public void sendPoints(View view) {
-        Intent intent = new Intent(this, SendPointsActivity.class);
+    public void points(View view) {
+        Intent intent = new Intent(this, PointsActivity.class);
         startActivity(intent);
     }
 
