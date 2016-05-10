@@ -13,11 +13,17 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Messenger;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
+import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +38,12 @@ import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocket;
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketManager;
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketServer;
 
+
+
 /**
  * Created by ivanf on 09/05/2016.
  */
-public class ConnectionService extends Service implements PeerListListener {
+public class ConnectionService extends Service implements PeerListListener{
     private SimWifiP2pManager mManager = null;
     private SimWifiP2pManager.Channel mChannel = null;
     private Messenger mService = null;
@@ -43,9 +51,17 @@ public class ConnectionService extends Service implements PeerListListener {
     private SimWifiP2pSocket mCliSocket = null;
     public boolean mBound = true;
     Activity bindedActivity;
+    InetAddress ip;
+
+    private Socket clientSocket;
+    private String serverIp;
+    private PrintWriter printwriter;
+
+
+    private static transient ObjectOutputStream objectOutputStream;
 
     Callbacks activity;
-
+    String clientMessage;
     protected SimWifiP2pBroadcastReceiver mReceiver;
 
     @Override
@@ -69,6 +85,15 @@ public class ConnectionService extends Service implements PeerListListener {
         // spawn the chat server background task
         new IncommingCommTask().executeOnExecutor(
                 AsyncTask.THREAD_POOL_EXECUTOR);
+
+
+        clientMessage = "REGISTER|username|password";
+
+
+        //connect to center server
+        new ConnectingToServerCommTask().executeOnExecutor(
+                AsyncTask.THREAD_POOL_EXECUTOR,
+                clientMessage);
 
         Toast.makeText(this, "Connection Service Created", Toast.LENGTH_SHORT).show();
 
@@ -237,11 +262,56 @@ public class ConnectionService extends Service implements PeerListListener {
         }
     }
 
+    public class ConnectingToServerCommTask extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground( String... clientMsg) {
+            Log.d("MainActivity", "DEBUG connecting... " + clientMsg[0]);
+
+            try {
+
+                clientSocket = null;
+                ip = InetAddress.getLocalHost();
+                serverIp = /*ip.getHostAddress();*/ "192.168.1.93";
+                Log.d("MainActivity", "DEBUG PRE connecting to  " + serverIp);
+                clientSocket = new Socket(serverIp, 4444);  //connect to server
+
+                printwriter = new PrintWriter(clientSocket.getOutputStream(),true);
+                printwriter.write(clientMsg[0]);  //write the message to output stream
+                printwriter.flush();
+                printwriter.close();
+
+                Log.d("MainActivity", "DEBUG connecting to  " + serverIp);
+
+                objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
+
+                objectOutputStream.writeObject(clientMsg[0]);
+                objectOutputStream.close();
+
+                clientSocket.close();
+
+                //clientSocket.close();   //closing the connection
+
+
+            } catch (UnknownHostException e) {
+                Log.d("MainActivity", "DEBUG unk exce " );
+                e.printStackTrace();
+            } catch (IOException e) {
+                Log.d("MainActivity", "DEBUG ioexc " + e.toString());
+                e.printStackTrace();
+            }
+        return null;
+        }
+
+
+    }
+
     private ServiceConnection mConnection = new ServiceConnection() {
         // callbacks for service binding, passed to bindService()
 
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {
+
             mService = new Messenger(service);
             mManager = new SimWifiP2pManager(mService);
             mChannel = mManager.initialize(getApplication(), getMainLooper(), null);
@@ -272,6 +342,8 @@ public class ConnectionService extends Service implements PeerListListener {
         activity.displayDevicesInRange(devices);
 
     }
+
+
 
     //callbacks interface for communication with service clients!
     public interface Callbacks{
