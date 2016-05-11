@@ -8,7 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="E-Mail"
+        android:text="Name"
         android:id="@+id/textView3"
         android:layout_marginTop="39dp"
         android:layout_alignParentTop="true"
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
         android:ems="10"
-        android:id="@+id/log_email_box"
+        android:id="@+id/log_name_box"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/textView3"
         android:layout_alignParentLeft="true" />
@@ -32,7 +32,7 @@
         android:text="Password"
         android:id="@+id/textView2"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/log_email_box"
+        android:layout_below="@+id/log_name_box"
         android:layout_alignParentLeft="true" />
 
     <EditText
@@ -78,11 +78,17 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Login"
-        android:id="@+id/button"
-        android:onClick = "login"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="142dp" />
+        android:text="@string/loginButton"
+        android:id="@+id/loginButton"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/loginOutputText"
+        android:layout_below="@+id/linearLayout2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

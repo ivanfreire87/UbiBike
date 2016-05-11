@@ -12,5 +12,6 @@
     <string name="inRangeButton">In Range</string>
 
     <string name="registerButton">Register</string>
+    <string name="loginButton">Login</string>
 
 </resources>
