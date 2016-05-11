@@ -29,30 +29,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="E-Mail"
-        android:id="@+id/textView3"
-        android:layout_below="@+id/reg_name_box"
-        android:layout_alignParentLeft="true" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
-        android:ems="10"
-        android:id="@+id/reg_email_box"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/textView3"
-        android:layout_alignParentLeft="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Password"
         android:id="@+id/textView2"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/reg_email_box"
-        android:layout_alignParentLeft="true" />
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/reg_name_box" />
 
     <EditText
         android:layout_width="match_parent"
@@ -64,35 +45,19 @@
         android:layout_below="@+id/textView2"
         android:layout_alignParentLeft="true" />
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="0.33"
-        android:weightSum="1"
-        android:id="@+id/linearLayout"
-        android:layout_below="@+id/reg_pw_box"
-        android:layout_alignParentLeft="true">
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1.00">
-
-        </LinearLayout>
-
-    </LinearLayout>
-
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Register"
-        android:id="@+id/button2"
-        android:onClick = "register"
-        android:layout_marginBottom="142dp"
-        android:layout_alignParentBottom="true"
+        android:text="@string/registerButton"
+        android:id="@+id/registerButton"
+        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/registerOutputText"
+        android:layout_below="@+id/reg_pw_box"
+        android:layout_above="@+id/registerButton" />
 
 </RelativeLayout>

@@ -19,14 +19,24 @@ import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.OutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+
 
 import pt.inesc.termite.wifidirect.SimWifiP2pBroadcast;
 import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
@@ -61,7 +71,6 @@ public class ConnectionService extends Service implements PeerListListener{
     private static transient ObjectOutputStream objectOutputStream;
 
     Callbacks activity;
-    String clientMessage;
     protected SimWifiP2pBroadcastReceiver mReceiver;
 
     @Override
@@ -85,15 +94,6 @@ public class ConnectionService extends Service implements PeerListListener{
         // spawn the chat server background task
         new IncommingCommTask().executeOnExecutor(
                 AsyncTask.THREAD_POOL_EXECUTOR);
-
-
-        clientMessage = "REGISTER|username|password";
-
-
-        //connect to center server
-        new ConnectingToServerCommTask().executeOnExecutor(
-                AsyncTask.THREAD_POOL_EXECUTOR,
-                clientMessage);
 
         Toast.makeText(this, "Connection Service Created", Toast.LENGTH_SHORT).show();
 
@@ -132,6 +132,24 @@ public class ConnectionService extends Service implements PeerListListener{
     }
 
     //////////////// methods to comunicate with binded activity
+
+    public String sendMessageToCentralServer(String message){
+
+        Object response = null;
+
+        //connect to center server
+        AsyncTask connectingToServerCommTask = new ConnectingToServerCommTask().executeOnExecutor(
+                AsyncTask.THREAD_POOL_EXECUTOR,
+                message);
+        try {
+            response = connectingToServerCommTask.get();
+
+        }catch(Exception e){
+            Log.d("MainActivity", "DEBUG connectingToServerCommTask InterruptedException "+ e);
+        }
+
+        return response.toString();
+    }
 
     public void inRange() {
         mManager.requestPeers(mChannel,ConnectionService.this);
@@ -226,7 +244,6 @@ public class ConnectionService extends Service implements PeerListListener{
 
         @Override
         protected Void doInBackground(Void... params) {
-            Log.d("MainActivity", "DEBUG inc ");
             try {
                 mSrvSocket = new SimWifiP2pSocketServer(
                         Integer.parseInt(getString(R.string.port)));
@@ -262,45 +279,61 @@ public class ConnectionService extends Service implements PeerListListener{
         }
     }
 
-    public class ConnectingToServerCommTask extends AsyncTask<String, Void, Void> {
+    public class ConnectingToServerCommTask extends AsyncTask<String, Void, String> {
 
         @Override
-        protected Void doInBackground( String... clientMsg) {
+        protected String doInBackground( String... clientMsg) {
             Log.d("MainActivity", "DEBUG connecting... " + clientMsg[0]);
+            String message = null;
 
             try {
 
                 clientSocket = null;
-                ip = InetAddress.getLocalHost();
+                ObjectOutputStream oos = null;
+                ObjectInputStream ois = null;
+                String sentMessage = clientMsg[0];
+
                 serverIp = /*ip.getHostAddress();*/ "192.168.1.93";
                 Log.d("MainActivity", "DEBUG PRE connecting to  " + serverIp);
-                clientSocket = new Socket(serverIp, 4444);  //connect to server
+                clientSocket = new Socket(serverIp, 4444);
+                Log.d("MainActivity", "DEBUG connected to  " + serverIp);
 
-                printwriter = new PrintWriter(clientSocket.getOutputStream(),true);
-                printwriter.write(clientMsg[0]);  //write the message to output stream
-                printwriter.flush();
-                printwriter.close();
+                //write to socket using ObjectOutputStream
+                oos = new ObjectOutputStream(clientSocket.getOutputStream());
 
-                Log.d("MainActivity", "DEBUG connecting to  " + serverIp);
+                oos.writeObject(sentMessage);
+                Log.d("MainActivity", "DEBUG Message sent to the server : " + sentMessage);
+                //read the server response message
+                ois = new ObjectInputStream(clientSocket.getInputStream());
+                message = (String) ois.readObject();
+                //close resources
+                ois.close();
+                oos.close();
 
-                objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
-
-                objectOutputStream.writeObject(clientMsg[0]);
-                objectOutputStream.close();
-
-                clientSocket.close();
-
-                //clientSocket.close();   //closing the connection
-
+                Log.d("MainActivity", "DEBUG message from server  " + message);
 
             } catch (UnknownHostException e) {
-                Log.d("MainActivity", "DEBUG unk exce " );
+                Log.d("MainActivity", "DEBUG UnknownHostException " + e.toString() );
                 e.printStackTrace();
             } catch (IOException e) {
-                Log.d("MainActivity", "DEBUG ioexc " + e.toString());
+                Log.d("MainActivity", "DEBUG IOException2 " + e.toString());
                 e.printStackTrace();
             }
-        return null;
+            catch (Exception e) {
+                Log.d("MainActivity", "DEBUG IOException2 " + e.toString());
+                e.printStackTrace();
+            }finally {
+                //Closing the socket
+                try {
+                    Log.d("MainActivity", "DEBUG closing socket  ");
+                    clientSocket.close();
+                }
+                catch(Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        return message;
         }
 
 
@@ -342,7 +375,6 @@ public class ConnectionService extends Service implements PeerListListener{
         activity.displayDevicesInRange(devices);
 
     }
-
 
 
     //callbacks interface for communication with service clients!

@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class MessagesActivity extends Activity implements ConnectionService.Callbacks {
 
-    ConnectionService mService;
+    private ConnectionService mService;
     private boolean mBound = false;
     private TextView mTextInput;
     private TextView mTextOutput;
@@ -55,7 +55,7 @@ public class MessagesActivity extends Activity implements ConnectionService.Call
         }
     }
 
-    // Methods to comunicate with service
+    // Methods to communicate with service
     public void eraseInput(){
         mTextInput.setText("");
     }
