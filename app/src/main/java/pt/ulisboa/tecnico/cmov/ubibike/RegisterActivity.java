@@ -17,7 +17,7 @@ import android.widget.Toast;
 /**
  * Created by ivanf on 08/05/2016.
  */
-public class RegisterActivity extends Activity implements ConnectionService.Callbacks{
+public class RegisterActivity extends AppCompatActivity implements ConnectionService.Callbacks{
 
     private ConnectionService mService;
     private boolean mBound = false;
@@ -108,7 +108,8 @@ public class RegisterActivity extends Activity implements ConnectionService.Call
     public void eraseInput(){}
     public void GuiUpdateConnectedState(){}
     public void guiUpdateDisconnectedState(){}
-    public void appendOutput(String s){}
+    public void appendValuesOutput(String s){}
+    public void setValidationOutput(String s){}
     public void displayDevicesInRange(CharSequence[] devices){}
 
 

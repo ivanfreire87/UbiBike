@@ -8,7 +8,8 @@
 
     <string name="port">10001</string>
 
-    <string name="sendButton">Send</string>
+    <string name="sendMessageButton">Send Message</string>
+    <string name="sendPointsButton">Send Points</string>
     <string name="inRangeButton">In Range</string>
 
     <string name="registerButton">Register</string>

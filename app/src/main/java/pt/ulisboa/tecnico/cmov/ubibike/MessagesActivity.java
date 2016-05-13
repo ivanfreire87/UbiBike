@@ -10,6 +10,7 @@ import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
@@ -17,11 +18,13 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class MessagesActivity extends Activity implements ConnectionService.Callbacks {
+public class MessagesActivity extends AppCompatActivity implements ConnectionService.Callbacks {
 
     private ConnectionService mService;
     private boolean mBound = false;
     private TextView mTextInput;
+    private TextView mMessagesOutput;
+    private TextView mValidationOutput;
     private TextView mTextOutput;
     private String connectionAddress;
 
@@ -60,8 +63,11 @@ public class MessagesActivity extends Activity implements ConnectionService.Call
         mTextInput.setText("");
     }
 
-    public void appendOutput(String text){
-        mTextOutput.append(text + "\n");
+    public void appendValuesOutput(String text){
+        mMessagesOutput.append(text + "\n");
+    }
+    public void setValidationOutput(String text){
+        mValidationOutput.setText(text);
     }
 
     public void displayDevicesInRange(final CharSequence[] devices) {
@@ -76,7 +82,8 @@ public class MessagesActivity extends Activity implements ConnectionService.Call
 
                         if (mBound) {
                             mService.connect(connectionAddress);
-                            appendOutput("Connected to device with ip " + connectionAddress);
+
+                            setValidationOutput("Connected to device with ip " + connectionAddress);
                         } else {
                             Toast.makeText(MessagesActivity.this, "Service not bound", Toast.LENGTH_SHORT).show();
                         }
@@ -92,14 +99,15 @@ public class MessagesActivity extends Activity implements ConnectionService.Call
 
     public void GuiUpdateConnectedState(){
 
-        findViewById(R.id.sendButton).setEnabled(true);
+        findViewById(R.id.sendMessageButton).setEnabled(true);
+        findViewById(R.id.idInRangeButton).setEnabled(false);
         mTextInput.setHint("");
         mTextInput.setText("");
 
     }
 
     public void guiSetButtonListeners() {
-        findViewById(R.id.sendButton).setOnClickListener(listenerSendButton);
+        findViewById(R.id.sendMessageButton).setOnClickListener(listenerSendButton);
         findViewById(R.id.idInRangeButton).setOnClickListener(listenerInRangeButton);
 
     }
@@ -109,10 +117,13 @@ public class MessagesActivity extends Activity implements ConnectionService.Call
         mTextInput = (TextView) findViewById(R.id.messagesInputText);
         mTextInput.setEnabled(true);
 
-        mTextOutput = (TextView) findViewById(R.id.messagesOutputText);
-        mTextOutput.setEnabled(false);
+        mValidationOutput = (TextView) findViewById(R.id.validationOutputText);
+        mValidationOutput.setEnabled(false);
 
-        findViewById(R.id.sendButton).setEnabled(false);
+        mMessagesOutput = (TextView) findViewById(R.id.messagesOutputText);
+        mMessagesOutput.setEnabled(false);
+
+        findViewById(R.id.sendMessageButton).setEnabled(false);
 
         findViewById(R.id.idInRangeButton).setEnabled(true);
 
@@ -121,7 +132,6 @@ public class MessagesActivity extends Activity implements ConnectionService.Call
     public void guiUpdateDisconnectedState() {
 
         mTextInput.setEnabled(true);
-        mTextOutput.setEnabled(true);
 
         findViewById(R.id.idInRangeButton).setEnabled(true);
 
@@ -142,9 +152,9 @@ public class MessagesActivity extends Activity implements ConnectionService.Call
     private OnClickListener listenerSendButton = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            findViewById(R.id.sendButton).setEnabled(false);
+            findViewById(R.id.sendMessageButton).setEnabled(false);
             if (mBound) {
-                mService.send(mTextInput.getText().toString());
+                mService.sendMessage(mTextInput.getText().toString());
             } else {
                 Toast.makeText(v.getContext(), "Service not bound", Toast.LENGTH_SHORT).show();
             }

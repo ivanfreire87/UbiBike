@@ -17,7 +17,7 @@ import android.widget.Toast;
 /**
  * Created by ivanf on 08/05/2016.
  */
-public class LoginActivity extends Activity implements ConnectionService.Callbacks {
+public class LoginActivity extends AppCompatActivity implements ConnectionService.Callbacks {
     public final static String NAME = "pt.ulisboa.tecnico.cmov.ubibike.MESSAGE";
 
     private ConnectionService mService;
@@ -110,10 +110,9 @@ public class LoginActivity extends Activity implements ConnectionService.Callbac
     public void eraseInput(){}
     public void GuiUpdateConnectedState(){}
     public void guiUpdateDisconnectedState(){}
-    public void appendOutput(String s){}
+    public void appendValuesOutput(String s){}
+    public void setValidationOutput(String s){}
     public void displayDevicesInRange(CharSequence[] devices){}
-
-
 
     /** Defines callbacks for service binding, passed to bindService() */
     private ServiceConnection mConnection = new ServiceConnection() {

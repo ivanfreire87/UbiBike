@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:layout_width="fill_parent">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/linearLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -13,38 +13,64 @@
         <EditText
             android:id="@+id/messagesInputText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:hint="Message to send">
 
-            <requestFocus />
         </EditText>
 
-        <LinearLayout
-            android:id="@+id/linearLayout2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
 
-            <Button
-                android:id="@+id/sendButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/sendButton" />
+    </RelativeLayout>
 
-            <Button
-                android:id="@+id/idInRangeButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/inRangeButton" />
+    <EditText
+        android:id="@+id/validationOutputText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/linearLayout1" />
 
-        </LinearLayout>
-
-
-
-    </LinearLayout>
+    <TextView
+        android:layout_width="229dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Messages received"
+        android:id="@+id/textView"
+        android:layout_marginTop="41dp"
+        android:layout_below="@+id/linearLayout2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <EditText
         android:id="@+id/messagesOutputText"
+        android:hint="No messages"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:inputType="textMultiLine" />
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView"
+        android:layout_alignParentLeft="true" />
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_below="@+id/validationOutputText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <Button
+            android:id="@+id/sendMessageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sendMessageButton" />
+
+        <Button
+            android:id="@+id/idInRangeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/inRangeButton" />
+
+    </LinearLayout>
+
+</RelativeLayout>

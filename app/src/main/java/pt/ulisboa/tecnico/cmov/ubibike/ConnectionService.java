@@ -92,7 +92,7 @@ public class ConnectionService extends Service implements PeerListListener{
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 
         // spawn the chat server background task
-        new IncommingCommTask().executeOnExecutor(
+        new IncomingCommTask().executeOnExecutor(
                 AsyncTask.THREAD_POOL_EXECUTOR);
 
         Toast.makeText(this, "Connection Service Created", Toast.LENGTH_SHORT).show();
@@ -155,9 +155,16 @@ public class ConnectionService extends Service implements PeerListListener{
         mManager.requestPeers(mChannel,ConnectionService.this);
     }
 
-    public void send(String message){
+    public void sendMessage(String message){
 
-        new SendCommTask().executeOnExecutor(
+        new SendMessageCommTask().executeOnExecutor(
+                AsyncTask.THREAD_POOL_EXECUTOR,
+                message);
+    }
+
+    public void sendPoints(String message){
+
+        new SendPointsCommTask().executeOnExecutor(
                 AsyncTask.THREAD_POOL_EXECUTOR,
                 message);
     }
@@ -181,14 +188,14 @@ public class ConnectionService extends Service implements PeerListListener{
 
 
     // Asynk tasks
-    public class SendCommTask extends AsyncTask<String, String, Void> {
+    public class SendMessageCommTask extends AsyncTask<String, String, Void> {
 
         @Override
         protected Void doInBackground(String... msg) {
 
             try {
                 mCliSocket.getOutputStream().write((msg[0] + "\n").getBytes());
-                Log.d("MainActivity", "DEBUG send "+msg[0]);
+                Log.d("MainActivity", "DEBUG send " + msg[0]);
 
                 BufferedReader sockIn = new BufferedReader(
                         new InputStreamReader(mCliSocket.getInputStream()));
@@ -208,12 +215,39 @@ public class ConnectionService extends Service implements PeerListListener{
         }
     }
 
+    public class SendPointsCommTask extends AsyncTask<String, String, String> {
+
+        @Override
+        protected String doInBackground(String... msg) {
+
+            try {
+                mCliSocket.getOutputStream().write((msg[0] + "\n").getBytes());
+                Log.d("MainActivity", "DEBUG send points " + msg[0]);
+
+                BufferedReader sockIn = new BufferedReader(
+                        new InputStreamReader(mCliSocket.getInputStream()));
+                sockIn.readLine();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            activity.eraseInput();
+            activity.guiUpdateDisconnectedState();
+        }
+    }
+
     public class OutgoingCommTask extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
 
-            activity.appendOutput("Connecting...");
+            activity.setValidationOutput("Connecting...");
         }
 
         @Override
@@ -233,14 +267,14 @@ public class ConnectionService extends Service implements PeerListListener{
         protected void onPostExecute(String result) {
             if (result != null) {
                 activity.guiUpdateDisconnectedState();
-                activity.appendOutput(result);
+                activity.setValidationOutput(result);
             } else {
                 activity.GuiUpdateConnectedState();
             }
         }
     }
 
-    public class IncommingCommTask extends AsyncTask<Void, String, Void> {
+    public class IncomingCommTask extends AsyncTask<Void, String, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {
@@ -275,7 +309,7 @@ public class ConnectionService extends Service implements PeerListListener{
 
         @Override
         protected void onProgressUpdate(String... values) {
-            activity.appendOutput(values[0] + "\n");
+            activity.appendValuesOutput(values[0] + "\n");
         }
     }
 
@@ -382,7 +416,8 @@ public class ConnectionService extends Service implements PeerListListener{
         public void eraseInput();
         public void GuiUpdateConnectedState();
         public void guiUpdateDisconnectedState();
-        public void appendOutput(String s);
+        public void appendValuesOutput(String s);
+        public void setValidationOutput(String s);
         public void displayDevicesInRange(CharSequence[] devices);
     }
 
