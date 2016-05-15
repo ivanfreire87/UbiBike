@@ -14,6 +14,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.List;
+
 /**
  * Created by ivanf on 08/05/2016.
  */
@@ -33,7 +37,7 @@ public class RegisterActivity extends AppCompatActivity implements ConnectionSer
         guiSetButtonListeners();
         mTextOutput = (TextView) findViewById(R.id.registerOutputText);
     }
-
+    public void sendTrack(List<LatLng> list){}
     @Override
     protected void onStart() {
         super.onStart();

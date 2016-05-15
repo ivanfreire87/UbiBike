@@ -16,7 +16,10 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class MessagesActivity extends AppCompatActivity implements ConnectionService.Callbacks {
 
@@ -62,6 +65,7 @@ public class MessagesActivity extends AppCompatActivity implements ConnectionSer
     public void eraseInput(){
         mTextInput.setText("");
     }
+    public void sendTrack(List<LatLng> list){}
 
     public void appendValuesOutput(String text){
         mMessagesOutput.append(text + "\n");

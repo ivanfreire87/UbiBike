@@ -17,7 +17,10 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class PointsActivity extends AppCompatActivity implements ConnectionService.Callbacks {
 
@@ -49,7 +52,7 @@ public class PointsActivity extends AppCompatActivity implements ConnectionServi
         guiSetButtonListeners();
         guiUpdateInitState();
     }
-
+    public void sendTrack(List<LatLng> list){}
     @Override
     protected void onStart() {
         super.onStart();

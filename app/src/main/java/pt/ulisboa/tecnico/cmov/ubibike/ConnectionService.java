@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.cmov.ubibike;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Service;
 import android.content.ComponentName;
@@ -7,14 +8,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Binder;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Messenger;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -53,7 +64,7 @@ import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketServer;
 /**
  * Created by ivanf on 09/05/2016.
  */
-public class ConnectionService extends Service implements PeerListListener{
+public class ConnectionService extends Service implements PeerListListener , LocationListener {
     private SimWifiP2pManager mManager = null;
     private SimWifiP2pManager.Channel mChannel = null;
     private Messenger mService = null;
@@ -62,19 +73,21 @@ public class ConnectionService extends Service implements PeerListListener{
     public boolean mBound = true;
     Activity bindedActivity;
     InetAddress ip;
+    List<LatLng> routePoints = new ArrayList<LatLng>();
 
     private Socket clientSocket;
     private String serverIp;
     private PrintWriter printwriter;
 
 
-    private static transient ObjectOutputStream objectOutputStream;
-
     Callbacks activity;
     protected SimWifiP2pBroadcastReceiver mReceiver;
 
     @Override
     public void onCreate() {
+        Log.d("MainActivity", "CREATED SERVICE ");
+
+
         Intent intent = new Intent(this, SimWifiP2pService.class);
 
         // initialize the WDSim API
@@ -85,17 +98,58 @@ public class ConnectionService extends Service implements PeerListListener{
         filter.addAction(SimWifiP2pBroadcast.WIFI_P2P_STATE_CHANGED_ACTION);
         filter.addAction(SimWifiP2pBroadcast.WIFI_P2P_PEERS_CHANGED_ACTION);
         filter.addAction(SimWifiP2pBroadcast.WIFI_P2P_NETWORK_MEMBERSHIP_CHANGED_ACTION);
+        filter.addAction(SimWifiP2pBroadcast.WIFI_P2P_GROUP_OWNERSHIP_CHANGED_ACTION);
 
         mReceiver = new SimWifiP2pBroadcastReceiver(this);
         registerReceiver(mReceiver, filter);
 
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 
+        LocationManager lManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+
+        if ( Build.VERSION.SDK_INT >= 23 &&
+                ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.d("MainActivity", "No permission ");
+            return;
+        }
+        lManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1, this);
+
         // spawn the chat server background task
         new IncomingCommTask().executeOnExecutor(
                 AsyncTask.THREAD_POOL_EXECUTOR);
 
+
+
         Toast.makeText(this, "Connection Service Created", Toast.LENGTH_SHORT).show();
+
+    }
+
+    public List<LatLng> getTrack(){
+        return routePoints;
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        LatLng newLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+        routePoints.add(newLatLng);
+        activity.sendTrack(routePoints);
+        Log.d("MainActivity", "Location Changed " + location.toString());
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
 
     }
 
@@ -419,6 +473,7 @@ public class ConnectionService extends Service implements PeerListListener{
         public void appendValuesOutput(String s);
         public void setValidationOutput(String s);
         public void displayDevicesInRange(CharSequence[] devices);
+        public void sendTrack(List<LatLng> list);
     }
 
 }

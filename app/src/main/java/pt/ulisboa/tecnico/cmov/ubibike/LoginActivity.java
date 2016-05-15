@@ -14,6 +14,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.List;
+
 /**
  * Created by ivanf on 08/05/2016.
  */
@@ -57,7 +61,7 @@ public class LoginActivity extends AppCompatActivity implements ConnectionServic
     private View.OnClickListener listenerLoginButton = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Toast.makeText(v.getContext(), "clicked register", Toast.LENGTH_SHORT).show();
+
             mTextOutput.setText("");
             if (mBound) {
                 String sentMessage = getLoginMessage();
@@ -113,6 +117,7 @@ public class LoginActivity extends AppCompatActivity implements ConnectionServic
     public void appendValuesOutput(String s){}
     public void setValidationOutput(String s){}
     public void displayDevicesInRange(CharSequence[] devices){}
+    public void sendTrack(List<LatLng> list){}
 
     /** Defines callbacks for service binding, passed to bindService() */
     private ServiceConnection mConnection = new ServiceConnection() {
